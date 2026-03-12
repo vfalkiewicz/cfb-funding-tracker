@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CFB Funding Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M16 2L28 8V24L16 30L4 24V8L16 2Z" stroke="url(#grad)" stroke-width="2" fill="none"/>
+              <path d="M16 8L22 11V21L16 24L10 21V11L16 8Z" fill="url(#grad)" opacity="0.3"/>
+              <defs><linearGradient id="grad" x1="4" y1="2" x2="28" y2="30"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
+            </svg>
+          </div>
+          <div>
+            <h1>CFB Funding Tracker</h1>
+            <p class="subtitle">College Football Program Funding Analysis &middot; FBS + Ivy League</p>
+          </div>
+        </div>
+        <div class="data-badge">
+          <span class="badge-dot"></span>
+          FY 2024 Data &middot; NCAA MFRS via Knight-Newhouse
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Aggregate FBS Overview -->
+    <section class="hero-section">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="hero-label">Total FBS Revenue</div>
+          <div class="hero-value">$11.79B</div>
+          <div class="hero-sub">FBS institutions (aggregate)</div>
+        </div>
+        <div class="hero-card accent">
+          <div class="hero-label">Donor Contributions</div>
+          <div class="hero-value">$2.59B</div>
+          <div class="hero-sub">22% of total revenue</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">School/Gov Support</div>
+          <div class="hero-value">$2.24B</div>
+          <div class="hero-sub">19% (institutional + student fees)</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">Self-Generated</div>
+          <div class="hero-value">$6.96B</div>
+          <div class="hero-sub">59% (media, tickets, sponsors, etc.)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FBS Revenue Breakdown Chart -->
+    <section class="chart-section">
+      <div class="section-header">
+        <h2>Where the Money Comes From</h2>
+        <p>FBS-wide revenue sources, FY 2024</p>
+      </div>
+      <div class="chart-row">
+        <div class="chart-container chart-doughnut">
+          <canvas id="fbs-revenue-chart"></canvas>
+        </div>
+        <div class="chart-legend" id="fbs-revenue-legend"></div>
+      </div>
+    </section>
+
+    <!-- School Selector -->
+    <section class="school-section">
+      <div class="section-header">
+        <h2>Explore by School</h2>
+        <p>Select a program to see its donor vs. institutional funding breakdown</p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="search-wrapper">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="school-search" placeholder="Search schools..." autocomplete="off">
+        </div>
+        <div class="conference-filters" id="conference-filters"></div>
+      </div>
+
+      <div class="school-grid" id="school-grid"></div>
+    </section>
+
+    <!-- School Detail Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal" id="school-modal">
+        <button class="modal-close" id="modal-close">&times;</button>
+        <div class="modal-header" id="modal-header"></div>
+        <div class="modal-body">
+          <div class="modal-charts">
+            <div class="modal-chart-box">
+              <h3>Revenue Sources</h3>
+              <canvas id="school-revenue-chart"></canvas>
+            </div>
+            <div class="modal-chart-box">
+              <h3>Estimated Football Funding</h3>
+              <canvas id="school-football-chart"></canvas>
+            </div>
+          </div>
+          <div class="modal-stats" id="modal-stats"></div>
+          <div class="modal-methodology">
+            <h4>Methodology Note</h4>
+            <p>Football-specific donor vs. institutional breakdown is estimated by applying football's share of total athletic spending proportionally to department-wide donor contributions and institutional support. Actual per-sport funding allocations are not publicly reported in NCAA MFRS data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Methodology -->
+    <section class="methodology-section">
+      <div class="section-header">
+        <h2>About This Data</h2>
+      </div>
+      <div class="method-grid">
+        <div class="method-card">
+          <div class="method-icon">&#x1F4CA;</div>
+          <h3>Data Source</h3>
+          <p>All financial data originates from the NCAA Membership Financial Reporting System (MFRS), compiled by the Knight-Newhouse College Athletics Database. Data is for FY 2024 (2023-24 academic year).</p>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">&#x1F3C8;</div>
+          <h3>Football Estimates</h3>
+          <p>Football spending is reported as a total by the NCAA. We estimate football's share of donor and institutional funding by proportionally allocating department-wide revenue sources based on football's percentage of total athletic spending.</p>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">&#x26A0;</div>
+          <h3>Limitations</h3>
+          <p>Most private schools are not legally required to disclose MFRS data. Ivy League data is compiled from EADA filings and university financial reports. Ivy schools are FCS (not FBS), don't offer athletic scholarships, and sponsor 30-40+ sports, so football's share of spending is much lower than at FBS programs.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Data sourced from <a href="https://knightnewhousedata.org" target="_blank" rel="noopener">Knight-Newhouse College Athletics Database</a> &middot; NCAA MFRS Reports &middot; FY 2024</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
