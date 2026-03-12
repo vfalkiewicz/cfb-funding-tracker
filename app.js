@@ -97,7 +97,13 @@ function renderSchoolGrid(schools) {
   grid.innerHTML = schools.map(s => {
     const donorM = (s.totalRev * s.donorPct / 100);
     const instM = (s.totalRev * s.instPct / 100);
-    const divBadge = s.division === "FCS" ? `<span class="card-div-badge">FCS</span>` : "";
+    const isIvy = s.division === "FCS";
+    const divBadge = isIvy ? `<span class="card-div-badge">FCS</span>` : "";
+    const subsidyLabel = isIvy ? "Subsidy*" : "School";
+    const donorStat = isIvy
+      ? `<div class="card-stat"><div class="stat-dot school"></div><div><div class="stat-val">${s.instPct}%</div><div class="stat-label">${subsidyLabel}</div></div></div>`
+      : `<div class="card-stat"><div class="stat-dot donors"></div><div><div class="stat-val">${s.donorPct}%</div><div class="stat-label">Donors</div></div></div>
+        <div class="card-stat"><div class="stat-dot school"></div><div><div class="stat-val">${s.instPct}%</div><div class="stat-label">School</div></div></div>`;
     return `<div class="school-card" data-school="${s.name}">
       <div class="card-top">
         <div class="card-school-name">${s.name} ${divBadge}</div>
@@ -109,14 +115,14 @@ function renderSchoolGrid(schools) {
         <div class="bar-self" style="width:${s.selfPct}%"></div>
       </div>
       <div class="card-stats">
-        <div class="card-stat"><div class="stat-dot donors"></div><div><div class="stat-val">${s.donorPct}%</div><div class="stat-label">Donors</div></div></div>
-        <div class="card-stat"><div class="stat-dot school"></div><div><div class="stat-val">${s.instPct}%</div><div class="stat-label">School</div></div></div>
-        <div class="card-stat"><div class="stat-dot self"></div><div><div class="stat-val">${s.selfPct}%</div><div class="stat-label">Self-Gen</div></div></div>
+        ${donorStat}
+        <div class="card-stat"><div class="stat-dot self"></div><div><div class="stat-val">${s.selfPct}%</div><div class="stat-label">${isIvy ? "Sport-Alloc" : "Self-Gen"}</div></div></div>
       </div>
       <div class="card-footer">
         <div class="card-revenue">Total Rev: <span>$${s.totalRev.toFixed(1)}M</span></div>
         <div class="card-football">Football Share: <span>${s.footballSharePct}%</span></div>
       </div>
+      ${isIvy ? '<div class="card-ivy-note">*Subsidy = donors + institutional (EADA does not separate)</div>' : ''}
     </div>`;
   }).join("");
 }

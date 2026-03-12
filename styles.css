@@ -209,6 +209,10 @@ header {
 .card-revenue span { color: var(--text); font-weight: 600; }
 .card-football { font-size: 0.72rem; color: var(--text-muted); }
 .card-football span { color: var(--accent); font-weight: 600; }
+.card-ivy-note {
+  font-size: 0.65rem; color: var(--text-muted); margin-top: 8px;
+  font-style: italic; position: relative; z-index: 1;
+}
 
 /* MODAL */
 .modal-overlay {

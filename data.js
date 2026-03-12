@@ -81,17 +81,36 @@ const SCHOOLS = [
   { name: "Kansas", conf: "Big 12", totalRev: 108.5, donorPct: 16, instPct: 15, selfPct: 69, footballSharePct: 33 },
   { name: "Cal", conf: "ACC", totalRev: 108.7, donorPct: 14, instPct: 18, selfPct: 68, footballSharePct: 30 },
   // Ivy League (FCS - private schools, endowment-funded model, no athletic scholarships)
-  // Data compiled from EADA filings, university financial reports, and public reporting.
-  // Ivy League athletics are heavily subsidized by endowments and donor gifts.
-  // Football share is lower because Ivy schools sponsor 30-40+ varsity sports.
-  { name: "Harvard", conf: "Ivy League", totalRev: 142.5, donorPct: 38, instPct: 48, selfPct: 14, footballSharePct: 12, division: "FCS" },
-  { name: "Yale", conf: "Ivy League", totalRev: 118.3, donorPct: 36, instPct: 50, selfPct: 14, division: "FCS" },
-  { name: "Princeton", conf: "Ivy League", totalRev: 105.8, donorPct: 40, instPct: 47, selfPct: 13, footballSharePct: 11, division: "FCS" },
-  { name: "Penn", conf: "Ivy League", totalRev: 92.4, donorPct: 35, instPct: 50, selfPct: 15, footballSharePct: 13, division: "FCS" },
-  { name: "Cornell", conf: "Ivy League", totalRev: 95.6, donorPct: 33, instPct: 52, selfPct: 15, footballSharePct: 12, division: "FCS" },
-  { name: "Columbia", conf: "Ivy League", totalRev: 82.7, donorPct: 34, instPct: 53, selfPct: 13, footballSharePct: 12, division: "FCS" },
-  { name: "Dartmouth", conf: "Ivy League", totalRev: 72.4, donorPct: 37, instPct: 50, selfPct: 13, footballSharePct: 14, division: "FCS" },
-  { name: "Brown", conf: "Ivy League", totalRev: 68.5, donorPct: 35, instPct: 52, selfPct: 13, footballSharePct: 13, division: "FCS" },
+  // Source: U.S. Dept of Education EADA filing, academic year 2023-24 (collection year 2024)
+  // EADA does not separate "donor" vs "institutional" revenue. It reports:
+  //   - Sport-allocated revenue (IL_TOTAL_REVENUE_ALL)
+  //   - "Not allocated by gender/sport" revenue (TOT_REVENUE_ALL_NOTALLOC) = institutional subsidies + donor gifts pooled
+  // For consistency, we map: donorPct+instPct = "not allocated" pool, selfPct = sport-allocated revenue
+  // Since Ivy schools are private with no public MFRS data, we cannot split donors from institutional support.
+  // donorPct here represents the combined donor+institutional subsidy pool.
+  // footballSharePct = TOTAL_EXPENSE_ALL_Football / GRND_TOTAL_EXPENSE
+  // GRND_TOTAL_REVENUE | TOT_REVENUE_ALL_NOTALLOC (subsidy pool) | IL_TOTAL_REVENUE_ALL (sport-allocated)
+  // Harvard:    $43,636,552 | $10,945,643 (25%) not-alloc | $24,867,219 (57%) sport-alloc | remainder=$7,823,690 (18%)
+  // Yale:       $84,593,440 | $41,348,858 (49%) not-alloc | $29,786,342 (35%) sport-alloc | remainder=$13,458,240 (16%)
+  // Princeton:  $47,797,015 | $14,334,587 (30%) not-alloc | $24,377,864 (51%) sport-alloc | remainder=$9,084,564 (19%)
+  // Penn:       $56,137,691 | $34,719,745 (62%) not-alloc | $14,658,033 (26%) sport-alloc | remainder=$6,759,913 (12%)
+  // Cornell:    $40,833,886 | $12,471,270 (31%) not-alloc | $20,813,404 (51%) sport-alloc | remainder=$7,549,212 (18%)
+  // Columbia:   $40,185,323 | $15,957,013 (40%) not-alloc | $14,579,278 (36%) sport-alloc | remainder=$9,649,032 (24%)
+  // Dartmouth:  $40,640,949 | $16,141,134 (40%) not-alloc | $17,348,203 (43%) sport-alloc | remainder=$7,151,612 (17%)
+  // Brown:      $42,236,049 | $12,657,399 (30%) not-alloc | $22,063,253 (52%) sport-alloc | remainder=$7,515,397 (18%)
+  //
+  // EADA lumps donors + institutional support into "not allocated by sport."
+  // donorPct = 0 for Ivy (cannot be separated from instPct in EADA data)
+  // instPct = "not allocated" pool % (donors + school subsidies combined)
+  // selfPct = sport-allocated revenue + remainder as % of total
+  { name: "Harvard", conf: "Ivy League", totalRev: 43.6, donorPct: 0, instPct: 25, selfPct: 75, footballSharePct: 10, division: "FCS" },
+  { name: "Yale", conf: "Ivy League", totalRev: 84.6, donorPct: 0, instPct: 49, selfPct: 51, footballSharePct: 13, division: "FCS" },
+  { name: "Princeton", conf: "Ivy League", totalRev: 47.8, donorPct: 0, instPct: 30, selfPct: 70, footballSharePct: 11, division: "FCS" },
+  { name: "Penn", conf: "Ivy League", totalRev: 56.1, donorPct: 0, instPct: 62, selfPct: 38, footballSharePct: 6, division: "FCS" },
+  { name: "Cornell", conf: "Ivy League", totalRev: 40.8, donorPct: 0, instPct: 31, selfPct: 69, footballSharePct: 12, division: "FCS" },
+  { name: "Columbia", conf: "Ivy League", totalRev: 40.2, donorPct: 0, instPct: 40, selfPct: 60, footballSharePct: 14, division: "FCS" },
+  { name: "Dartmouth", conf: "Ivy League", totalRev: 40.6, donorPct: 0, instPct: 40, selfPct: 60, footballSharePct: 11, division: "FCS" },
+  { name: "Brown", conf: "Ivy League", totalRev: 42.2, donorPct: 0, instPct: 30, selfPct: 70, footballSharePct: 10, division: "FCS" },
 ];
 
 const CONFERENCES = [...new Set(SCHOOLS.map(s => s.conf))].sort();
